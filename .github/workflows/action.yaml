@@ -1,31 +1,32 @@
 name: Deploy my Lambda Function
 
+# trigger on all push events to main branch
 on: 
-  push: 
-    branches: 
+  push:
+    branches:
       - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: Set up python
+      - name: Set up Python
         uses: actions/setup-python@v2
-        with: 
+        with:
           python-version: 3.8
       - name: Install libraries
-        run: | 
+        run: |
             cd function
             python -m pip install --upgrade pip
-            if [ -f requirement.txt ]; then pip install -r requirements.txt -t .; fi
+            if [ -f requirements.txt ]; then pip install -r requirements.txt -t .; fi
       - name: Create zip bundle
-        run: | 
+        run: |
             cd function
-            zip -r ../${{ github.sha }}.zip . 
-      - name: Archieve artifact 
+            zip -r ../${{ github.sha }}.zip .
+      - name: Archive artifact
         uses: actions/upload-artifact@v2
-        with: 
+        with:
           name: zipped-bundle
           path: ${{ github.sha }}.zip
